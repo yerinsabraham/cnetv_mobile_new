@@ -1,0 +1,60 @@
+name: cnetv_mobile_new
+description: A stable version of CNETV mobile app for Flutter 3.37.x (pre-release compatible)
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.37.0-0.0.pre <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.5
+  flutter_staggered_grid_view: ^0.7.0   # downgraded for compatibility
+  carousel_slider: ^5.1.1
+  loading_overlay: ^0.4.3
+  page_transition: ^2.0.9
+
+  # State management
+  provider: ^6.0.7
+
+  # Networking & API
+  http: ^1.1.0
+  dio: ^5.1.0
+
+  # Deep linking / share / launch
+  share_plus: ^11.1.0
+  url_launcher: ^6.2.12
+
+  # Toast / notifications
+  fluttertoast: ^8.2.12
+
+  # Platform-specific packages
+  path_provider_linux: ^2.2.1
+  path_provider_windows: ^2.3.0
+  url_launcher_linux: ^3.2.1
+  url_launcher_windows: ^3.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app-icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/icons/
+    - assets/images/
+    - assets/svgs/
