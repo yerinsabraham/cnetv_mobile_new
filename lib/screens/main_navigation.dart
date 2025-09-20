@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
-import 'earn_screen.dart';
-import 'live_screen.dart';
-import 'chat_screen.dart';
-import 'wallet_screen.dart';
+import 'package:provider/provider.dart';
+import '../provider/user_provider.dart';
+import '../screens/home_screen.dart';
+import '../screens/login_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/live_tv_screen.dart';
+import '../screens/chat_screen.dart';
 
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({Key? key}) : super(key: key);
+  const MainNavigation({super.key});
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
@@ -14,16 +16,32 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+  final List<Widget> _allScreens = [];
 
-  final List<Widget> _screens = [
-    HomeScreen(),
-    EarnScreen(),
-    LiveScreen(),
-    ChatScreen(),
-    WalletScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _initializeScreens();
+  }
 
-  void _onTabTapped(int index) {
+  void _initializeScreens() {
+    _allScreens.addAll([
+      const HomeScreen(),
+      const LiveTvScreen(),
+      const ChatScreen(),
+      const ProfileScreen(),
+    ]);
+  }
+
+  void _onTabTapped(int index, bool isLoggedIn) {
+    // Prevent unauthenticated users from accessing protected screens
+    if (!isLoggedIn && index != 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please login to access this feature")),
+      );
+      return;
+    }
+
     setState(() {
       _currentIndex = index;
     });
@@ -31,32 +49,41 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+
+    // Show login screen if not logged in
+    if (!userProvider.isLoading && !userProvider.isLoggedIn) {
+      return const LoginScreen();
+    }
+
+    // While loading user data, show spinner
+    if (userProvider.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: _allScreens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onTabTapped,
+        onTap: (index) => _onTabTapped(index, userProvider.isLoggedIn),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.monetization_on),
-            label: 'Earn',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.live_tv),
-            label: 'Live',
+            icon: Icon(Icons.tv),
+            label: "Live TV",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
-            label: 'Chat',
+            label: "Chat",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Wallet',
+            icon: Icon(Icons.person),
+            label: "Profile",
           ),
         ],
       ),

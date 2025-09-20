@@ -1,39 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Providers (state management)
-import 'package:cnetv_mobile_new/provider/user_provider.dart';
-import 'package:cnetv_mobile_new/provider/ads_provider.dart';
+// Providers
+import 'provider/user_provider.dart';
+import 'provider/ads_provider.dart';
 
 // Screens
+import 'screens/splash_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/home_screen.dart';
 import 'screens/main_navigation.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
+  runApp(const CNETVApp());
+}
+
+class CNETVApp extends StatelessWidget {
+  const CNETVApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
         ChangeNotifierProvider<AdsProvider>(create: (_) => AdsProvider()),
       ],
-      child: const CnetvApp(),
-    ),
-  );
-}
-
-class CnetvApp extends StatelessWidget {
-  const CnetvApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'CNETV Mobile',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.white,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'CNETV Mobile',
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+          scaffoldBackgroundColor: Colors.white,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/home': (context) => const HomeScreen(),
+          '/main': (context) => const MainNavigation(),
+        },
       ),
-      home: const MainNavigation(),
     );
   }
 }
